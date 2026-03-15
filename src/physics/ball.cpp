@@ -1,4 +1,4 @@
-#include "../../include/physics/ball.hpp"
+#include "physics/ball.hpp"
 
 void Ball::set_position(double x, double y){
     position.x = x;
