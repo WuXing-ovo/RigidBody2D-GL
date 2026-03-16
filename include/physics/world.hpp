@@ -33,4 +33,6 @@ public:
     const Ball &get_Ball(size_t index) const;
     std::span<Ball> get_Balls(size_t start, size_t end);
     std::span<const Ball> get_Balls(size_t start, size_t end) const;
+    // Trace compute step by step
+    void step();
 };

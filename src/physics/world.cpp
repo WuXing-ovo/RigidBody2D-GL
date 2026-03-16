@@ -114,3 +114,13 @@ std::span<const Ball> World::get_Balls(size_t start, size_t end) const
     }
     return std::span<const Ball>(balls.begin() + start, balls.begin() + end);
 }
+
+void World::step()
+{
+    for (auto &each_ball : balls)
+    {
+        each_ball.set_velocity(each_ball.get_velocity().x, each_ball.get_velocity().y - gravity_y * dt);
+        each_ball.set_position(each_ball.get_position().x + each_ball.get_velocity().x * dt,
+                               each_ball.get_position().y + each_ball.get_velocity().y * dt);
+    }
+}
