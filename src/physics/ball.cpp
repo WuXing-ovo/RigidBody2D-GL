@@ -1,13 +1,20 @@
 #include "physics/ball.hpp"
 
 void Ball::set_position(double x, double y){
-    position.x = x;
-    position.y = y;
+    // Use this pattern instead of `position.x = x` for better readability
+    position = {x, y};
+}
+
+void Ball::set_position(const vec2 &position_in){
+    position = position_in;
 }
 
 void Ball::set_velocity(double x_dot, double y_dot){
-    velocity.x = x_dot;
-    velocity.y = y_dot;
+    velocity = {x_dot, y_dot};
+}
+
+void Ball::set_velocity(const vec2 &velocity_in){
+    velocity = velocity_in;
 }
 
 void Ball::set_mass(double m){

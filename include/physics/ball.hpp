@@ -17,7 +17,9 @@ class Ball
     // Public methods
     // Set parameters
     void set_position(double x=0, double y=0);
+    void set_position(const vec2 &position_in);
     void set_velocity(double x_dot=0, double y_dot=0);
+    void set_velocity(const vec2 &velocity_in);
     void set_mass(double m=0);
     void set_size(double size=0);
     // Get parameters
