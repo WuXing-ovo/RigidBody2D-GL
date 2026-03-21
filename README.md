@@ -61,8 +61,9 @@ world.print_state();
 
 ## Physical Model
 
-- **Coefficient of restitution**: $C_{r} = \left|\frac{\mathbf{u}_{f} \cdot \hat{\mathbf{n}}}{\mathbf{u}_{i} \cdot \hat{\mathbf{n}}}\right|$, where $\mathbf{u}_{i}$ is initial velocity, $\mathbf{u}_{f}$ is final velocity.
-- **Velocity**: $v_{a} = \frac{m_{a}u_{a}+m_{b}u_{b}+m_{b}C_{r}(u_{b}-u_{a})}{m_{a}+m_{b}} $ and $v_{b} = \frac{m_{a}u_{a}+m_{b}u_{b}+m_{a}C_{r}(u_{a}-u_{b})}{m_{a}+m_{b}} $
+- **Coefficient of restitution**: $$C_r = \left| \frac{\mathbf{u}_f \cdot \hat{\mathbf{n}}}{\mathbf{u}_i \cdot \hat{\mathbf{n}}} \right|$$
+  where $\mathbf{u}_i$ is initial velocity, $\mathbf{u}_f$ is final velocity.
+- **Velocity**: $v_{a} = \frac{m_{a}u_{a}+m_{b}u_{b}+m_{b}C_{r}(u_{b}-u_{a})}{m_{a}+m_{b}}$ and $v_{b} = \frac{m_{a}u_{a}+m_{b}u_{b}+m_{a}C_{r}(u_{a}-u_{b})}{m_{a}+m_{b}}$
 
 ## Roadmap
 
