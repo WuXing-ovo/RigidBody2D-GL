@@ -5,6 +5,7 @@
 #include <utility>
 #include <span>
 #include <cmath>
+#include <iostream>
 
 void World::set_size(double x, double y)
 {
@@ -197,4 +198,25 @@ void World::update_velocity(Ball &ball_1, Ball &ball_2)
     // Update velocity
     ball_1.set_velocity(ball_1.get_velocity() - vec_diff_of_1);
     ball_2.set_velocity(ball_2.get_velocity() - vec_diff_of_2);
+}
+
+void World::print_state() const
+{
+    std::cout << "=== World State (Frame: " << frame << ") ===" << std::endl;
+    size_t index = 0;
+    for (auto ball : balls)
+    {
+        std::cout << "Ball " << index << ": pos=" << ball.get_position() << " vel=" << ball.get_velocity() << " mass=" << ball.get_mass() << " r=" << ball.get_size() << std::endl;
+        index++;
+    }
+}
+
+void World::simulate(size_t steps)
+{
+    for (size_t i = 0; i < steps; i++)
+    {
+        step();
+        collision_detect();
+        frame++;
+    }
 }

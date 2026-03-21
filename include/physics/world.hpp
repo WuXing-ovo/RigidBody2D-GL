@@ -24,12 +24,15 @@ private:
     double dt;
     // Coefficient of restitution
     double restitution;
+    // Frame count
+    size_t frame;
     // Private Methods
     void update_velocity(Ball &ball_1, Ball &ball_2);
+    
 
 public:
     // Constructor
-    World() : dt(0.01), restitution(1) {}
+    World() : dt(0.01), restitution(1), frame(0) {}
     // Setters
     void set_size(double x = 1, double y = 1);
     void set_size(const vec2 &world_size_in);
@@ -49,4 +52,6 @@ public:
     void step();
     // Collision detect
     void collision_detect();
+    void print_state() const;
+    void simulate(size_t steps);
 };
