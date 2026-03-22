@@ -37,11 +37,18 @@ void World::set_gravity(const vec2 &g)
 
 void World::add_Ball(Ball &&b)
 {
+    b.set_ID(ball_count);
     balls.emplace_back(std::move(b));
+    ball_count++;
 }
 
 void World::add_Balls(std::vector<Ball> &&new_balls)
 {
+    for (auto &x : new_balls)
+    {
+        x.set_ID(ball_count);
+        ball_count++;
+    }
     balls.reserve(balls.size() + new_balls.size());
     balls.insert(balls.end(), std::make_move_iterator(new_balls.begin()), std::make_move_iterator(new_balls.end()));
 }
@@ -203,11 +210,9 @@ void World::update_velocity(Ball &ball_1, Ball &ball_2)
 void World::print_state() const
 {
     std::cout << "=== World State (Frame: " << frame << ") ===" << std::endl;
-    size_t index = 0;
     for (auto ball : balls)
     {
-        std::cout << "Ball " << index << ": pos=" << ball.get_position() << " vel=" << ball.get_velocity() << " mass=" << ball.get_mass() << " r=" << ball.get_size() << std::endl;
-        index++;
+        std::cout << "Ball " << ball.get_ID() << ": pos=" << ball.get_position() << " vel=" << ball.get_velocity() << " mass=" << ball.get_mass() << " r=" << ball.get_size() << std::endl;
     }
 }
 
