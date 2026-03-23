@@ -82,6 +82,13 @@ public:
     void step();
     // Collision detect
     void collision_detect();
+
+    /// @brief Print world state with all balls
     void print_state() const;
+
+    /// @brief Print part of all balls
+    /// @param start Start index
+    /// @param end End index
+    void print_state(size_t start, size_t end) const;
     void simulate(size_t steps);
 };

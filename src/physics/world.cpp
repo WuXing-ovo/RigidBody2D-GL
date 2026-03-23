@@ -253,6 +253,15 @@ void World::print_state() const
     }
 }
 
+void World::print_state(size_t start, size_t end) const
+{
+    std::cout << "=== World State (Frame: " << frame << ") ===" << std::endl;
+    for (auto ball : std::span<const Ball>(balls.begin() + start, balls.begin() + end))
+    {
+        std::cout << "Ball " << ball.get_ID() << ": pos=" << ball.get_position() << " vel=" << ball.get_velocity() << " mass=" << ball.get_mass() << " r=" << ball.get_size() << std::endl;
+    }
+}
+
 void World::simulate(size_t steps)
 {
     for (size_t i = 0; i < steps; i++)
