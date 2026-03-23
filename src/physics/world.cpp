@@ -6,6 +6,7 @@
 #include <span>
 #include <cmath>
 #include <iostream>
+#include <random>
 
 void World::set_size(double x, double y)
 {
@@ -51,6 +52,42 @@ void World::add_Balls(std::vector<Ball> &&new_balls)
     }
     balls.reserve(balls.size() + new_balls.size());
     balls.insert(balls.end(), std::make_move_iterator(new_balls.begin()), std::make_move_iterator(new_balls.end()));
+}
+
+void World::add_random_Ball(const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max, double size_min, double size_max)
+{
+    // Create a ball
+    Ball ball_input;
+
+    // Set size
+    std::uniform_real_distribution<double> size(size_min, size_max);
+    ball_input.set_size(size(rng));
+
+    // Set position within the world_size
+    std::uniform_real_distribution<double> position_x(ball_input.get_size(), world_size.x - ball_input.get_size());
+    std::uniform_real_distribution<double> position_y(ball_input.get_size(), world_size.y - ball_input.get_size());
+    ball_input.set_position(position_x(rng), position_y(rng));
+
+    // Set velocity
+    std::uniform_real_distribution<double> velocity_x(v_min.x, v_max.x);
+    std::uniform_real_distribution<double> velocity_y(v_min.y, v_max.y);
+    ball_input.set_velocity(vec2{velocity_x(rng), velocity_y(rng)});
+
+    // Set mass
+    std::uniform_real_distribution<double> mass(mass_min, mass_max);
+    ball_input.set_mass(mass(rng));
+
+    // Add the new ball to vector
+    add_Ball(std::move(ball_input));
+}
+
+void World::add_random_Balls(size_t num, const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max, double size_min, double size_max)
+{
+    // Add balls with random properties by add_random_Ball()
+    for (int i = 0; i < num; i++)
+    {
+        add_random_Ball(v_min, v_max, mass_min, mass_max, size_min, size_max);
+    }
 }
 
 void World::set_dt(double s)

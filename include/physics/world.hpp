@@ -3,6 +3,7 @@
 #include "physics/vec2.hpp"
 #include <vector>
 #include <span>
+#include <random>
 
 // Template for x square
 template <typename T>
@@ -28,12 +29,14 @@ private:
     size_t frame;
     // Ball count for ID tracking
     size_t ball_count;
+    // Random seed
+    std::mt19937 rng;
     // Private Methods
     void update_velocity(Ball &ball_1, Ball &ball_2);
 
 public:
     // Constructor
-    World() : dt(0.01), restitution(1), frame(0), ball_count(0) {}
+    World() : dt(0.01), restitution(1), frame(0), ball_count(0), rng(std::random_device{}()) {}
     // Setters
     void set_size(double x = 1, double y = 1);
     void set_size(const vec2 &world_size_in);
@@ -47,6 +50,25 @@ public:
     /// @brief Add multiple balls with automatic sequential ID assignment
     /// @param new_balls Vector of balls to add (ownership transfered)
     void add_Balls(std::vector<Ball> &&new_balls);
+
+    /// @brief Add a random ball to the world
+    /// @param v_min Minimum velocity range
+    /// @param v_max Maximum velocity range
+    /// @param mass_min Minimum mass
+    /// @param mass_max Maximum mass
+    /// @param size_min Minimum size
+    /// @param size_max Maximum size
+    void add_random_Ball(const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max, double size_min, double size_max);
+
+    /// @brief Add random balls to the world
+    /// @param num Number of random balls
+    /// @param v_min Minimum of velocity
+    /// @param v_max Maximum of velocity
+    /// @param mass_min Minimum of mass
+    /// @param mass_max Maximum of mass
+    /// @param size_min Minimum of size
+    /// @param size_max Maximum of size
+    void add_random_Balls(size_t num, const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max, double size_min, double size_max);
 
     void set_dt(double s = 0.01);
     // Getters
