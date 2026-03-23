@@ -34,6 +34,9 @@ private:
     // Private Methods
     void update_velocity(Ball &ball_1, Ball &ball_2);
 
+    /// @brief Sort balls by ID
+    void sort_by_ID();
+
 public:
     // Constructor
     World() : dt(0.01), restitution(1), frame(0), ball_count(0), rng(std::random_device{}()) {}
@@ -84,11 +87,11 @@ public:
     void collision_detect();
 
     /// @brief Print world state with all balls
-    void print_state() const;
+    void print_state();
 
     /// @brief Print part of all balls
     /// @param start Start index
     /// @param end End index
-    void print_state(size_t start, size_t end) const;
+    void print_state(size_t start, size_t end);
     void simulate(size_t steps);
 };

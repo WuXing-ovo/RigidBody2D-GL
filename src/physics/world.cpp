@@ -244,8 +244,9 @@ void World::update_velocity(Ball &ball_1, Ball &ball_2)
     ball_2.set_velocity(ball_2.get_velocity() - vec_diff_of_2);
 }
 
-void World::print_state() const
+void World::print_state()
 {
+    sort_by_ID();
     std::cout << "=== World State (Frame: " << frame << ") ===" << std::endl;
     for (auto ball : balls)
     {
@@ -253,8 +254,9 @@ void World::print_state() const
     }
 }
 
-void World::print_state(size_t start, size_t end) const
+void World::print_state(size_t start, size_t end)
 {
+    sort_by_ID();
     std::cout << "=== World State (Frame: " << frame << ") ===" << std::endl;
     for (auto ball : std::span<const Ball>(balls.begin() + start, balls.begin() + end))
     {
@@ -270,4 +272,10 @@ void World::simulate(size_t steps)
         collision_detect();
         frame++;
     }
+}
+
+void World::sort_by_ID()
+{
+    std::sort(balls.begin(), balls.end(), [](const Ball &a, const Ball &b)
+              { return a.get_ID() < b.get_ID(); });
 }
