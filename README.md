@@ -65,6 +65,21 @@ world.print_state();
   where $\mathbf{u}_i$ is initial velocity, $\mathbf{u}_f$ is final velocity.
 - **Velocity**: $v_{a} = \frac{m_{a}u_{a}+m_{b}u_{b}+m_{b}C_{r}(u_{b}-u_{a})}{m_{a}+m_{b}}$ and $v_{b} = \frac{m_{a}u_{a}+m_{b}u_{b}+m_{a}C_{r}(u_{a}-u_{b})}{m_{a}+m_{b}}$
 
+## Performance Results
+
+OpenMP parallelization results (with -O3 optimization):
+
+| Balls | Serial (ms) | Parallel (ms) | Speedup |
+| ----- | ----------- | ------------- | ------- |
+| 10000 | 19034       | 7426          | 2.56x   |
+| 5000  | 3387        | 2576          | 1.31x   |
+| 2000  | 972         | 711           | 1.36x   |
+| 1000  | 203         | 189           | 1.07x   |
+| 500   | 42          | 62            | 0.68x   |
+| 100   | 1           | 73            | 0.01x   |
+
+Tested on: i9-13900HX
+
 ## Roadmap
 
 The whole project is divided into three stages.
