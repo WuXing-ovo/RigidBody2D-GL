@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include <random>
+#include <omp.h>
 
 void World::set_size(double x, double y)
 {
@@ -168,12 +169,14 @@ void World::collision_detect()
     // Sort by x - r
     std::sort(balls.begin(), balls.end(), [](const Ball &a, const Ball &b)
               { return (a.get_position().x - a.get_size()) < (b.get_position().x - b.get_size()); });
-    size_t index = 0;
-    for (auto &each_ball : balls)
+#pragma omp parallel for shared(balls)
+    for (size_t i = 0; i < balls.size(); i++)
     {
-        index++;
-        for (auto &the_other : std::span(balls).subspan(index, balls.size() - index))
+        // each ball should be picked up upon i
+        auto &each_ball = balls[i];
+        for (size_t j = i + 1; j < balls.size(); j++)
         {
+            auto &the_other = balls[j];
             // x_1 + r_1 < x_2 - r_2
             // In a sorted ball list, there will be no more collided ball after first uncollided ball
             // So break after first uncollided ball
