@@ -25,6 +25,10 @@ private:
     double dt;
     // Coefficient of restitution
     double restitution;
+    // n_body_gravity controller
+    bool enable_n_body_gravity;
+    // Gravitation constant
+    float G;
     // Frame count
     size_t frame;
     // Ball count for ID tracking
@@ -45,7 +49,7 @@ private:
 
 public:
     // Constructor
-    World() : dt(0.01), restitution(1), frame(0), ball_count(0), rng(std::random_device{}()) {}
+    World() : dt(0.01), restitution(1), frame(0), ball_count(0), enable_n_body_gravity(true), G(6.67430e-11), rng(std::random_device{}()) {}
     // Setters
 
     /// @brief Set the world boundaries
@@ -139,4 +143,8 @@ public:
     /// @brief Start simulation steps times
     /// @param steps Steps you want to forward
     void simulate(size_t steps);
+
+    /// @brief Set n body gravity
+    /// @param status true: enable; false: disable
+    void set_n_body_gravity(bool status);
 };

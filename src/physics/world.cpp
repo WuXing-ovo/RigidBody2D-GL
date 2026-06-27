@@ -157,6 +157,22 @@ std::span<const Ball> World::get_Balls(size_t start, size_t end) const
 
 void World::step()
 {
+    if (enable_n_body_gravity == true)
+    {
+        for (auto &each_ball_i : balls)
+        {
+            vec2 total_gravity;
+            for (auto &each_ball_j : balls)
+            {
+                if (each_ball_i.get_ID() == each_ball_j.get_ID())
+                {
+                    continue;
+                }
+                total_gravity += G * each_ball_i.get_mass() * each_ball_j.get_mass() / ((each_ball_i.get_position() - each_ball_j.get_position()).dot(each_ball_i.get_position() - each_ball_j.get_position()) + 0.1) * (each_ball_j.get_position() - each_ball_i.get_position()).normalized();
+            }
+            each_ball_i.set_velocity(each_ball_i.get_velocity() + total_gravity * (1 / each_ball_i.get_mass()) * dt);
+        }
+    }
     for (auto &each_ball : balls)
     {
         each_ball.set_velocity(each_ball.get_velocity() + gravity * dt);
@@ -281,4 +297,9 @@ void World::sort_by_ID()
 {
     std::sort(balls.begin(), balls.end(), [](const Ball &a, const Ball &b)
               { return a.get_ID() < b.get_ID(); });
+}
+
+void World::set_n_body_gravity(bool status)
+{
+    enable_n_body_gravity = status;
 }
