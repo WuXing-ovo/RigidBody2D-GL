@@ -330,3 +330,8 @@ void World::set_n_body_gravity(bool status)
 {
     enable_n_body_gravity = status;
 }
+
+void World::set_restitution(double input_restitution)
+{
+    restitution = input_restitution;
+}

@@ -152,4 +152,8 @@ class World
     /// @brief Set n body gravity
     /// @param status true: enable; false: disable
     void set_n_body_gravity(bool status);
+
+    /// @brief Set restitution coefficient
+    /// @param input_restitution 
+    void set_restitution(double input_restitution);
 };
