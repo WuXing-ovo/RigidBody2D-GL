@@ -1,13 +1,14 @@
 #include "physics/world.hpp"
 #include "physics/vec2.hpp"
-#include <stdexcept>
-#include <iterator>
-#include <utility>
-#include <span>
+#include <algorithm>
 #include <cmath>
 #include <iostream>
-#include <random>
+#include <iterator>
 #include <omp.h>
+#include <random>
+#include <span>
+#include <stdexcept>
+#include <utility>
 
 void World::set_size(double x, double y)
 {
@@ -52,10 +53,12 @@ void World::add_Balls(std::vector<Ball> &&new_balls)
         ball_count++;
     }
     balls.reserve(balls.size() + new_balls.size());
-    balls.insert(balls.end(), std::make_move_iterator(new_balls.begin()), std::make_move_iterator(new_balls.end()));
+    balls.insert(balls.end(), std::make_move_iterator(new_balls.begin()),
+                 std::make_move_iterator(new_balls.end()));
 }
 
-void World::add_random_Ball(const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max, double size_min, double size_max)
+void World::add_random_Ball(const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max,
+                            double size_min, double size_max)
 {
     // Create a ball
     Ball ball_input;
@@ -65,8 +68,10 @@ void World::add_random_Ball(const vec2 &v_min, const vec2 &v_max, double mass_mi
     ball_input.set_size(size(rng));
 
     // Set position within the world_size
-    std::uniform_real_distribution<double> position_x(ball_input.get_size(), world_size.x - ball_input.get_size());
-    std::uniform_real_distribution<double> position_y(ball_input.get_size(), world_size.y - ball_input.get_size());
+    std::uniform_real_distribution<double> position_x(ball_input.get_size(),
+                                                      world_size.x - ball_input.get_size());
+    std::uniform_real_distribution<double> position_y(ball_input.get_size(),
+                                                      world_size.y - ball_input.get_size());
     ball_input.set_position(position_x(rng), position_y(rng));
 
     // Set velocity
@@ -82,7 +87,8 @@ void World::add_random_Ball(const vec2 &v_min, const vec2 &v_max, double mass_mi
     add_Ball(std::move(ball_input));
 }
 
-void World::add_random_Balls(size_t num, const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max, double size_min, double size_max)
+void World::add_random_Balls(size_t num, const vec2 &v_min, const vec2 &v_max, double mass_min,
+                             double mass_max, double size_min, double size_max)
 {
     // Add balls with random properties by add_random_Ball()
     for (int i = 0; i < num; i++)
@@ -168,9 +174,15 @@ void World::step()
                 {
                     continue;
                 }
-                total_gravity += G * each_ball_i.get_mass() * each_ball_j.get_mass() / ((each_ball_i.get_position() - each_ball_j.get_position()).dot(each_ball_i.get_position() - each_ball_j.get_position()) + 0.1) * (each_ball_j.get_position() - each_ball_i.get_position()).normalized();
+                total_gravity +=
+                    G * each_ball_i.get_mass() * each_ball_j.get_mass() /
+                    ((each_ball_i.get_position() - each_ball_j.get_position())
+                         .dot(each_ball_i.get_position() - each_ball_j.get_position()) +
+                     0.1) *
+                    (each_ball_j.get_position() - each_ball_i.get_position()).normalized();
             }
-            each_ball_i.set_velocity(each_ball_i.get_velocity() + total_gravity * (1 / each_ball_i.get_mass()) * dt);
+            each_ball_i.set_velocity(each_ball_i.get_velocity() +
+                                     total_gravity * (1 / each_ball_i.get_mass()) * dt);
         }
     }
     for (auto &each_ball : balls)
@@ -183,8 +195,9 @@ void World::step()
 void World::collision_detect()
 {
     // Sort by x - r
-    std::sort(balls.begin(), balls.end(), [](const Ball &a, const Ball &b)
-              { return (a.get_position().x - a.get_size()) < (b.get_position().x - b.get_size()); });
+    std::sort(
+        balls.begin(), balls.end(), [](const Ball &a, const Ball &b)
+        { return (a.get_position().x - a.get_size()) < (b.get_position().x - b.get_size()); });
 #pragma omp parallel for shared(balls)
     for (size_t i = 0; i < balls.size(); i++)
     {
@@ -194,27 +207,33 @@ void World::collision_detect()
         {
             auto &the_other = balls[j];
             // x_1 + r_1 < x_2 - r_2
-            // In a sorted ball list, there will be no more collided ball after first uncollided ball
-            // So break after first uncollided ball
-            if (each_ball.get_position().x + each_ball.get_size() < the_other.get_position().x - the_other.get_size())
+            // In a sorted ball list, there will be no more collided ball after first
+            // uncollided ball So break after first uncollided ball
+            if (each_ball.get_position().x + each_ball.get_size() <
+                the_other.get_position().x - the_other.get_size())
             {
                 break;
             }
             // Check y-axis gap if x-aixs is potentially colliding
-            // Continue to skip next criteria when the gap of y is larger than the sum of radius
-            if (std::fabs(each_ball.get_position().y - the_other.get_position().y) > each_ball.get_size() + the_other.get_size())
+            // Continue to skip next criteria when the gap of y is larger than the sum
+            // of radius
+            if (std::fabs(each_ball.get_position().y - the_other.get_position().y) >
+                each_ball.get_size() + the_other.get_size())
             {
                 continue;
             }
             // Compute a precise distance
             // (x_1 - x_2) ** 2 + (y_1 - y_2) ** 2 = (r_1 + r_2) ** 2
-            if (sqr(each_ball.get_position().x - the_other.get_position().x) + (sqr(each_ball.get_position().y - the_other.get_position().y)) <= sqr(each_ball.get_size() + the_other.get_size()))
+            if (sqr(each_ball.get_position().x - the_other.get_position().x) +
+                    (sqr(each_ball.get_position().y - the_other.get_position().y)) <=
+                sqr(each_ball.get_size() + the_other.get_size()))
             {
                 update_velocity(each_ball, the_other);
             }
         }
         // Wall detection
-        // Take the opposite velocity on the collided axis when the ball collide with the wall
+        // Take the opposite velocity on the collided axis when the ball collide
+        // with the wall
         if (each_ball.get_position().x - each_ball.get_size() < 0)
         {
             each_ball.set_velocity(-each_ball.get_velocity().x, each_ball.get_velocity().y);
@@ -236,9 +255,8 @@ void World::collision_detect()
 
 void World::update_velocity(Ball &ball_1, Ball &ball_2)
 {
-    // Note: This function won't check the validation of inputs, so don't use it without checking
-    // Saclarization
-    // Get normal vector between two balls
+    // Note: This function won't check the validation of inputs, so don't use it
+    // without checking Saclarization Get normal vector between two balls
     const vec2 normal_vector = (ball_1.get_position() - ball_2.get_position()).normalized();
 
     // Velocity on normal direction
@@ -246,9 +264,14 @@ void World::update_velocity(Ball &ball_1, Ball &ball_2)
     const auto v2_i_normal = ball_2.get_velocity().dot(normal_vector);
 
     // Get the velocity after collision
-    // (m_1 * v1_i + m_2 * v2_i + C_r * m_2 * (v2_i - v1_i)) / (m_1 + m_2) and vice versa
-    const auto v1_f_normal = (ball_1.get_mass() * v1_i_normal + ball_2.get_mass() * v2_i_normal + restitution * ball_2.get_mass() * (v2_i_normal - v1_i_normal)) / (ball_1.get_mass() + ball_2.get_mass());
-    const auto v2_f_normal = (ball_1.get_mass() * v1_i_normal + ball_2.get_mass() * v2_i_normal + restitution * ball_1.get_mass() * (v1_i_normal - v2_i_normal)) / (ball_1.get_mass() + ball_2.get_mass());
+    // (m_1 * v1_i + m_2 * v2_i + C_r * m_2 * (v2_i - v1_i)) / (m_1 + m_2) and
+    // vice versa
+    const auto v1_f_normal = (ball_1.get_mass() * v1_i_normal + ball_2.get_mass() * v2_i_normal +
+                              restitution * ball_2.get_mass() * (v2_i_normal - v1_i_normal)) /
+                             (ball_1.get_mass() + ball_2.get_mass());
+    const auto v2_f_normal = (ball_1.get_mass() * v1_i_normal + ball_2.get_mass() * v2_i_normal +
+                              restitution * ball_1.get_mass() * (v1_i_normal - v2_i_normal)) /
+                             (ball_1.get_mass() + ball_2.get_mass());
 
     // Compute the difference between v1_f and v2_f
     const auto diff_of_1 = v1_f_normal - v1_i_normal;
@@ -269,7 +292,9 @@ void World::print_state()
     std::cout << "=== World State (Frame: " << frame << ") ===" << std::endl;
     for (auto ball : balls)
     {
-        std::cout << "Ball " << ball.get_ID() << ": pos=" << ball.get_position() << " vel=" << ball.get_velocity() << " mass=" << ball.get_mass() << " r=" << ball.get_size() << std::endl;
+        std::cout << "Ball " << ball.get_ID() << ": pos=" << ball.get_position()
+                  << " vel=" << ball.get_velocity() << " mass=" << ball.get_mass()
+                  << " r=" << ball.get_size() << std::endl;
     }
 }
 
@@ -279,7 +304,9 @@ void World::print_state(size_t start, size_t end)
     std::cout << "=== World State (Frame: " << frame << ") ===" << std::endl;
     for (auto ball : std::span<const Ball>(balls.begin() + start, balls.begin() + end))
     {
-        std::cout << "Ball " << ball.get_ID() << ": pos=" << ball.get_position() << " vel=" << ball.get_velocity() << " mass=" << ball.get_mass() << " r=" << ball.get_size() << std::endl;
+        std::cout << "Ball " << ball.get_ID() << ": pos=" << ball.get_position()
+                  << " vel=" << ball.get_velocity() << " mass=" << ball.get_mass()
+                  << " r=" << ball.get_size() << std::endl;
     }
 }
 
@@ -295,8 +322,8 @@ void World::simulate(size_t steps)
 
 void World::sort_by_ID()
 {
-    std::sort(balls.begin(), balls.end(), [](const Ball &a, const Ball &b)
-              { return a.get_ID() < b.get_ID(); });
+    std::sort(balls.begin(), balls.end(),
+              [](const Ball &a, const Ball &b) { return a.get_ID() < b.get_ID(); });
 }
 
 void World::set_n_body_gravity(bool status)

@@ -1,8 +1,8 @@
-#include <iostream>
-#include <span>
 #include "physics/ball.hpp"
 #include "physics/world.hpp"
 #include "raylib.h"
+#include <iostream>
+#include <span>
 
 int main()
 {
@@ -26,17 +26,18 @@ int main()
     SetTargetFPS(Fps);
 
     // Main loop
-    while(!WindowShouldClose())
+    while (!WindowShouldClose())
     {
         world.simulate(1);
         world.print_state();
         // Get Balls
         std::span<const Ball> all_balls = world.get_Balls(0, 100);
 
-        BeginDrawing;
+        BeginDrawing();
         ClearBackground(WHITE);
         // Add balls to the screen
-        for(const auto& ball : all_balls){
+        for (const auto &ball : all_balls)
+        {
             auto position = ball.get_position();
             auto radius = ball.get_size();
 

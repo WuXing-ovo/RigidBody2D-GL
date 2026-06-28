@@ -4,14 +4,14 @@
 
 class Ball
 {
-private:
+  private:
     vec2 position;
     vec2 velocity;
     double mass;
     double size;
     size_t ID;
 
-public:
+  public:
     // Constructors
     Ball() : position{0.0, 0.0}, velocity{0.0, 0.0}, mass(0.0), size(0.0), ID(0) {}
 

@@ -54,7 +54,8 @@ struct vec2
         double L2 = std::sqrt(x * x + y * y);
         return vec2{x / L2, y / L2};
     }
-    friend std::ostream& operator<<(std::ostream& os, const vec2& v) {
+    friend std::ostream &operator<<(std::ostream &os, const vec2 &v)
+    {
         os << "(" << v.x << ", " << v.y << ")";
         return os;
     }

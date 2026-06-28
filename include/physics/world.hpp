@@ -6,15 +6,14 @@
 #include <random>
 
 // Template for x square
-template <typename T>
-T sqr(T x)
+template <typename T> T sqr(T x)
 {
     return x * x;
 }
 
 class World
 {
-private:
+  private:
     // Size of the panel
     vec2 world_size;
     // Gravaty
@@ -47,9 +46,13 @@ private:
     /// @brief Detect collision and update their velocity
     void collision_detect();
 
-public:
+  public:
     // Constructor
-    World() : dt(0.01), restitution(1), frame(0), ball_count(0), enable_n_body_gravity(true), G(6.67430e-11), rng(std::random_device{}()) {}
+    World()
+        : dt(0.01), restitution(1), frame(0), ball_count(0), enable_n_body_gravity(true),
+          G(6.67430e-11), rng(std::random_device{}())
+    {
+    }
     // Setters
 
     /// @brief Set the world boundaries
@@ -85,7 +88,8 @@ public:
     /// @param mass_max Maximum mass
     /// @param size_min Minimum size
     /// @param size_max Maximum size
-    void add_random_Ball(const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max, double size_min, double size_max);
+    void add_random_Ball(const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max,
+                         double size_min, double size_max);
 
     /// @brief Add random balls to the world
     /// @param num Number of random balls
@@ -95,7 +99,8 @@ public:
     /// @param mass_max Maximum of mass
     /// @param size_min Minimum of size
     /// @param size_max Maximum of size
-    void add_random_Balls(size_t num, const vec2 &v_min, const vec2 &v_max, double mass_min, double mass_max, double size_min, double size_max);
+    void add_random_Balls(size_t num, const vec2 &v_min, const vec2 &v_max, double mass_min,
+                          double mass_max, double size_min, double size_max);
 
     /// @brief Set dt
     /// @param s dt
